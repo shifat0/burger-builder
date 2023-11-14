@@ -5,6 +5,7 @@ import Orders from "./Orders/Orders";
 import Checkout from "./Orders/Checkout/Checkout";
 
 import { Route, Routes } from "react-router-dom";
+import Auth from "./Auth/Auth";
 
 const Main = () => {
   return (
@@ -12,9 +13,10 @@ const Main = () => {
       <Header />
       <div className="container">
         <Routes>
+          <Route path="/" element={<BurgerBuilder />} />
+          <Route path="/login" element={<Auth />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/" element={<BurgerBuilder />} />
         </Routes>
       </div>
     </div>
