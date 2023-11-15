@@ -41,6 +41,7 @@ class Auth extends Component {
           initialValues={{ email: "", password: "", confirmPassword: "" }}
           onSubmit={(values) => {
             this.props.auth(values.email, values.password, this.state.mode);
+            localStorage.getItem("token") && this.props.navigate("/");
           }}
           validate={(values) => {
             const errors = {};

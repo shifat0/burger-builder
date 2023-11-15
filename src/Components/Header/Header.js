@@ -3,8 +3,24 @@ import "./Header.css";
 import { NavLink } from "react-router-dom";
 import { Navbar, NavbarBrand, Nav, NavItem } from "reactstrap";
 import Logo from "../../assets/logo.png";
+import { connect } from "react-redux";
+import { logout } from "../../redux/authActions";
 
-const Header = () => {
+const mapStateToProps = (state) => {
+  return {
+    token: state.token,
+  };
+};
+
+const mapDispatchToProps = () => {
+  return (dispatch) => {
+    return {
+      logout: () => dispatch(logout()),
+    };
+  };
+};
+
+const Header = ({ token, logout }) => {
   return (
     <div className="Navigation">
       <Navbar
@@ -17,25 +33,35 @@ const Header = () => {
           <img src={Logo} alt="Logo" width="80px" />
         </NavbarBrand>
         <Nav className="mr-md-5">
-          <NavItem>
-            <NavLink to="/" className="NavLink">
-              Burger Builder
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to="/orders" className="NavLink">
-              Orders
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to="/login" className="NavLink">
-              Login
-            </NavLink>
-          </NavItem>
+          {token ? (
+            <>
+              <NavItem>
+                <NavLink to="/" className="NavLink">
+                  Burger Builder
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/orders" className="NavLink">
+                  Orders
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to="/" onClick={() => logout()} className="NavLink">
+                  Logout
+                </NavLink>
+              </NavItem>
+            </>
+          ) : (
+            <NavItem>
+              <NavLink to="/login" className="NavLink">
+                Login
+              </NavLink>
+            </NavItem>
+          )}
         </Nav>
       </Navbar>
     </div>
   );
 };
 
-export default Header;
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
