@@ -11,7 +11,22 @@ export const authSuccess = (token, userId) => {
   };
 };
 
+export const authLoading = (isLoading) => {
+  return {
+    type: actionTypes.AUTH_LOADING,
+    payload: isLoading,
+  };
+};
+
+export const authError = (errMsg) => {
+  return {
+    type: actionTypes.AUTH_FAILURE,
+    payload: errMsg,
+  };
+};
+
 export const auth = (email, password, mode) => {
+  authLoading(true);
   return (dispatch) => {
     const authData = {
       email: email,
@@ -29,15 +44,22 @@ export const auth = (email, password, mode) => {
 
     const apiKey = "AIzaSyBcFpUTBeuMKUQoJX0UH0OOf91lPndUW4I";
 
-    axios.post(url + apiKey, authData).then((res) => {
-      localStorage.setItem("token", res.data.idToken);
-      localStorage.setItem("userId", res.data.localId);
-      const tokenExpiresIn = new Date(
-        new Date().getTime() + res.data.expiresIn * 1000
-      );
-      localStorage.setItem("expiresIn", tokenExpiresIn);
-      dispatch(authSuccess(res.data.idToken, res.data.localId));
-    });
+    axios
+      .post(url + apiKey, authData)
+      .then((res) => {
+        localStorage.setItem("token", res.data.idToken);
+        localStorage.setItem("userId", res.data.localId);
+        const tokenExpiresIn = new Date(
+          new Date().getTime() + res.data.expiresIn * 1000
+        );
+        localStorage.setItem("expiresIn", tokenExpiresIn);
+        dispatch(authSuccess(res.data.idToken, res.data.localId));
+        authLoading(false);
+      })
+      .catch((err) => {
+        dispatch(authLoading(false));
+        dispatch(authError(err.response.data.error.message));
+      });
   };
 };
 
