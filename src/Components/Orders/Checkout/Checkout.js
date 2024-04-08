@@ -6,13 +6,14 @@ import axios from "axios";
 
 import { connect } from "react-redux";
 import { resetIngredients } from "../../../redux/actionCreators";
-import { Link } from "react-router-dom";
 
 const mapStateToProps = (state) => {
   return {
     ingredients: state.ingredients,
     totalPrice: state.totalPrice,
     purchasable: state.purchasable,
+    userId: state.userId,
+    token: state.token,
   };
 };
 
@@ -34,6 +35,10 @@ class Checkout extends Component {
     modalMsg: "",
   };
 
+  goBack = () => {
+    this.props.navigate("/");
+  };
+
   inputChangerHandler = (e) => {
     this.setState({
       values: {
@@ -49,15 +54,17 @@ class Checkout extends Component {
       ingredients: this.props.ingredients,
       customer: this.state.values,
       price: this.props.totalPrice,
-      orderTime: new Date(),
+      userId: this.props.userId,
     };
+    let url = "http://localhost:5000/api/v1";
     axios
-      .post(
-        "https://burger-builder-5486f-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json",
-        order
-      )
+      .post(`${url}/order`, order, {
+        headers: {
+          Authorization: `Bearer ${this.props.token}`,
+        },
+      })
       .then((response) => {
-        if (response.status === 200) {
+        if (response.status === 201) {
           this.setState({
             isLoading: false,
             isModalOpen: true,
@@ -129,31 +136,27 @@ class Checkout extends Component {
           </select>
           <br />
           <Button
-            style={{ backgroundColor: "#D70F64", marginRight: "5px" }}
+            style={{ backgroundColor: "#D70F64" }}
             className="mr-auto"
             onClick={this.submitHandler}
             disabled={!this.props.purchasable}
           >
             Place Order
           </Button>
-          <Link to="/">
-            <Button color="secondary" className="ml-3">
-              Cancel
-            </Button>
-          </Link>
+          <Button color="secondary" className="ml-1" onClick={this.goBack}>
+            Cancel
+          </Button>
         </form>
       </div>
     );
     return (
       <div>
         {this.state.isLoading ? <Spinner /> : form}
-        <Link to="/">
-          <Modal isOpen={this.state.isModalOpen}>
-            <ModalBody>
-              <p>{this.state.modalMsg}</p>
-            </ModalBody>
-          </Modal>
-        </Link>
+        <Modal isOpen={this.state.isModalOpen} onClick={this.goBack}>
+          <ModalBody>
+            <p>{this.state.modalMsg}</p>
+          </ModalBody>
+        </Modal>
       </div>
     );
   }

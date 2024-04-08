@@ -34,7 +34,7 @@ export const auth = (email, password, mode) => (dispatch) => {
   };
   let url = "http://localhost:5000/api/v1";
   let authUrl = null;
-  if (mode === "signup") {
+  if (mode === "Sign Up") {
     authUrl = `${url}/user`;
   } else {
     authUrl = `${url}/user/auth`;

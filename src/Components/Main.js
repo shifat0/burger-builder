@@ -33,7 +33,10 @@ const Main = ({ token, authCheck }) => {
           <Route element={getToken ? <Outlet /> : <Navigate to="/login" />}>
             <Route path="/" element={<BurgerBuilder />} />
             <Route path="/orders" element={<Orders />} />
-            <Route path="/checkout" element={<Checkout />} />
+            <Route
+              path="/checkout"
+              element={<Checkout navigate={navigate} />}
+            />
           </Route>
           <Route path="/login" element={<Auth navigate={navigate} />} />
         </Routes>

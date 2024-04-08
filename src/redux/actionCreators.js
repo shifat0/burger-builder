@@ -40,11 +40,10 @@ export const orderLoadFailed = () => {
   };
 };
 
-export const fetchOrders = () => (dispatch) => {
+export const fetchOrders = (token, userId) => (dispatch) => {
+  let url = "http://localhost:5000/api/v1";
   axios
-    .get(
-      "https://burger-builder-5486f-default-rtdb.asia-southeast1.firebasedatabase.app/orders.json"
-    )
+    .get(`${url}/order`, { headers: { Authorization: `Bearer ${token}` } })
     .then((response) => {
       dispatch(loadOrders(response.data));
     })
